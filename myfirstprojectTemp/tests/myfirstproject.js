@@ -10,12 +10,8 @@ const main = async() => {
     anchor.setProvider(provider); 
 
     const program = anchor.workspace.Myfirstproject; 
-
-    const baseAccount = anchor.web3.Keypair.generate()
-
-
-    const tx = await program.rpc.startStuffOff({ 
-
+    const baseAccount = anchor.web3.Keypair.generate();
+    let tx = await program.rpc.startStuffOff({ 
       accounts: { 
         baseAccount: baseAccount.publicKey, 
         user: provider.wallet.publicKey, 
@@ -27,16 +23,20 @@ const main = async() => {
     console.log("Your transaction signature", tx)
 
     let account = await program.account.baseAccount.fetch(baseAccount.publicKey);
-     console.log('👀 GIF Count', account.totalGifs.toString())
-
-   await program.rpc.addGif({
-    accounts: { 
-      baseAccount: baseAccount.publicKey,
-    },
-   });
+    console.log('👀 GIF Count', account.totalGifs.toString())
+ 
+    
+    await program.rpc.addGif("https://media.giphy.com/media/krkrHAEodHgzP72rTI/giphy.gif", {
+      accounts: {
+        baseAccount: baseAccount.publicKey,
+        user: provider.wallet.publicKey,
+      },
+    });
 
    account = await program.account.baseAccount.fetch(baseAccount.publicKey); 
    console.log(' GIF Count', account.totalGifs.toString())
+
+   console.log('GIF List', account.gifList)
 }
 
 const runMain = async () => {
